@@ -23,6 +23,8 @@ router.get('/api/posts',auth, postController.pagination);
 //end point user post pagination route
 router.get('/api/posts/user/:userId',auth, postController.userPost);
 
+//full post details route
+router.get('/api/posts/:postId',auth, postController.detailsPost);
 
 
 module.exports = router;

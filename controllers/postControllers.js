@@ -68,6 +68,7 @@ const userPost = async (req, res) => {
 
 
 
+
 const likepost = async(req,res)=>{
     const { userId } = req.body;
     const postId = req.params.postId;
@@ -142,11 +143,46 @@ const commentpost = async(req,res)=>{
         return res.status(500).json({ message: "Server Error" });
     }
 }
+
+
+const detailsPost = async (req, res) => {
+    const postId = req.params.postId;
+
+    try {
+        // Find the post
+        const post = await Post.findById(postId).populate('user').populate('comments').exec();
+
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        // Find likes for the post
+        const likes = await User.find({ _id: { $in: post.likes } });
+
+        // Construct full post details object
+        const fullPostDetails = {
+            _id: post._id,
+            user: post.user,
+            content: post.content,
+            likes: likes,
+            comments: post.comments,
+            createdAt: post.createdAt,
+        };
+
+       return res.json(fullPostDetails);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
 module.exports = {
     addpost,
     likepost,
     commentpost,
     pagination,
     userPost,
+    detailsPost,
   };
   
