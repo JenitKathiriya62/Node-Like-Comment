@@ -27,6 +27,46 @@ const addpost = async(req,res)=>{
 
 }
 
+const pagination = async(req,res)=>{
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    try {
+        const posts = await Post.find()
+                                .skip((page - 1) * limit)
+                                .limit(limit)
+                                .sort({ createdAt: -1 })
+                                .exec();
+
+       return res.json(posts);
+    } catch (error) {
+        console.error(error);
+       return res.status(500).json({ message: 'Server error' });
+    }
+}
+
+
+// Endpoint for fetching posts by a specific user
+const userPost = async (req, res) => {
+    const userId = req.params.userId;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    try {
+        const posts = await Post.find({ user: userId })
+                                .skip((page - 1) * limit)
+                                .limit(limit)
+                                .sort({ createdAt: -1 })
+                                .exec();
+
+       return res.json(posts);
+    } catch (error) {
+        console.error(error);
+       return res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
 
 const likepost = async(req,res)=>{
     const { userId } = req.body;
@@ -106,5 +146,7 @@ module.exports = {
     addpost,
     likepost,
     commentpost,
+    pagination,
+    userPost,
   };
   

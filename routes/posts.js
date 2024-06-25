@@ -16,4 +16,13 @@ router.post('/:postId/like',auth, postController.likepost);
 // Route to comment on a post
 router.post('/:postId/comment',auth, postController.commentpost);
 
+//Pagination post route
+router.get('/api/posts',auth, postController.pagination);
+
+
+//end point user post pagination route
+router.get('/api/posts/user/:userId',auth, postController.userPost);
+
+
+
 module.exports = router;
