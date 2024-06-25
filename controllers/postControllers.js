@@ -44,10 +44,16 @@ const likepost = async(req,res)=>{
             return res.status(404).json({ message: "Post not found" });
         }
 
-        // Check if the user has already liked the post
-        if (post.likes.includes(userId)) {
-            return res.status(400).json({ message: "Post already liked by the user" });
+        const index = post.likes.indexOf(userId);
+
+        if (index === -1) {
+            // User hasn't liked the post, so like it
+            post.likes.push(userId);
+        } else {
+            // User has already liked the post, so unlike it
+            post.likes.splice(index, 1);
         }
+
 
         // Add user to likes array and save the post
         post.likes.push(userId);
